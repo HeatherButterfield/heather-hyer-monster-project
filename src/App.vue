@@ -35,16 +35,16 @@
               <v-btn id="attack" @click="attack">ATTACK</v-btn>
               <v-btn id="special-attack" @click="specialAttack">SPECIAL ATTACK</v-btn>
               <v-btn id="heal" @click="heal">HEAL</v-btn>
-              <v-btn id="give-up" @click="giveUp">GIVE UP</v-btn>
+              <v-btn id="give-up" @click="areYouSureDialog = true">GIVE UP</v-btn>
           </div>
       </v-row>
       <v-row class="row log" v-if="turns.length > 0">
           <div class="small-12 columns">
               <ul>
-                  <li v-for="turn in turns"
+                  <v-chip v-for="turn in turns"
                       :class="{'player-turn': turn.isPlayer, 'monster-turn': !turn.isPlayer}" :key="turn">
                       {{ turn.text }}
-                  </li>
+                  </v-chip>
               </ul>
           </div>
       </v-row>
@@ -104,6 +104,34 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
+      <v-dialog
+        v-model="areYouSureDialog"
+        max-width="290"
+        >
+        <v-card>
+          <v-card-title class="headline">Are you sure you want to quit?</v-card-title>
+
+          <v-card-actions>
+            <div class="flex-grow-1"></div>
+
+            <v-btn
+              color="green darken-1"
+              text
+              @click="areYouSureDialog = false"
+            >
+              Disagree
+            </v-btn>
+
+            <v-btn
+              color="green darken-1"
+              text
+              @click="giveUp"
+            >
+              Agree
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-container>
   </v-layout>
 </template>
@@ -119,6 +147,7 @@ export default {
         turns: [],
         winDialog: false,
         loseDialog: false,
+        areYouSureDialog: false,
         startNew: false
       }
     },
@@ -168,6 +197,7 @@ export default {
         },
         giveUp: function () {
             this.gameIsRunning = false;
+            this.areYouSureDialog = false;
         },
         monsterAttacks: function() {
             var damage = this.calculateDamage(5, 12);
@@ -249,13 +279,11 @@ export default {
 }
 
 .log ul .player-turn {
-    color: blue;
-    background-color: #e4e8ff;
+    color: #6d87cb;
 }
 
 .log ul .monster-turn {
-    color: red;
-    background-color: #ffc0c1;
+    color: #95173c;
 }
 
 button {
